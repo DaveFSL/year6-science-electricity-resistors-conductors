@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚡ Year 6 Science – Conductors, Insulators & Resistors</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1923;
+    --panel: #1a2535;
+    --card: #1e2d42;
+    --accent: #00d4ff;
+    --green: #00e676;
+    --yellow: #ffd740;
+    --orange: #ff6d00;
+    --red: #ff1744;
+    --purple: #d500f9;
+    --text: #e8f4f8;
+    --muted: #7a9bb5;
+    --border: #2a3f58;
+    --radius: 14px;
+    --shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #0a1628 0%, #1a2a4a 50%, #0d1f35 100%);
+    padding: 48px 24px 56px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 3px solid var(--accent);
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,212,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-bolt {
+    font-size: 72px;
+    display: block;
+    animation: pulse 2.5s ease-in-out infinite;
+    filter: drop-shadow(0 0 24px var(--accent));
+  }
+  @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.08);} }
+  .hero h1 {
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    font-weight: 900;
+    color: #fff;
+    margin: 12px 0 8px;
+    letter-spacing: -0.5px;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero p {
+    color: var(--muted);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-bar {
+    background: var(--panel);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .progress-label { font-size: 0.8rem; color: var(--muted); white-space: nowrap; font-weight: 700; }
+  .progress-track {
+    flex: 1; height: 8px; background: var(--border); border-radius: 99px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--green));
+    border-radius: 99px; transition: width 0.6s ease;
+  }
+  .progress-pct { font-family: 'Space Mono', monospace; font-size: 0.8rem; color: var(--accent); white-space: nowrap; }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 900px; margin: 0 auto; padding: 32px 20px 80px; }
+
+  /* ── PHASE CARD ── */
+  .phase {
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    margin-bottom: 28px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .phase-header {
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s;
+  }
+  .phase-header:hover { background: rgba(255,255,255,0.04); }
+  .phase-icon { font-size: 2rem; flex-shrink: 0; }
+  .phase-title { flex: 1; }
+  .phase-title h2 { font-size: 1.25rem; font-weight: 800; color: #fff; }
+  .phase-title .meta { font-size: 0.82rem; color: var(--muted); font-weight: 600; margin-top: 2px; }
+  .phase-badge {
+    padding: 4px 12px; border-radius: 99px; font-size: 0.75rem; font-weight: 800;
+    white-space: nowrap; font-family: 'Space Mono', monospace;
+  }
+  .phase-chevron {
+    color: var(--muted); font-size: 1.2rem; transition: transform 0.3s; flex-shrink: 0;
+  }
+  .phase.open .phase-chevron { transform: rotate(180deg); }
+  .phase-body {
+    display: none; padding: 0 24px 24px; border-top: 1px solid var(--border);
+    animation: fadeIn 0.3s ease;
+  }
+  .phase.open .phase-body { display: block; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(-8px);} to{opacity:1;transform:translateY(0);} }
+
+  /* ── SECTIONS INSIDE PHASES ── */
+  .section-label {
+    font-size: 0.7rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--muted); margin: 24px 0 10px; padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── Q&A CARDS ── */
+  .qa-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 8px; }
+  .qa-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .qa-question {
+    padding: 14px 18px;
+    cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    font-weight: 700; font-size: 0.95rem; transition: background 0.2s;
+  }
+  .qa-question:hover { background: rgba(0,212,255,0.06); }
+  .qa-question .q-icon { color: var(--accent); font-size: 1rem; flex-shrink: 0; }
+  .qa-question span { flex: 1; }
+  .qa-question .reveal-hint { font-size: 0.72rem; color: var(--muted); white-space: nowrap; }
+  .qa-answer {
+    display: none; padding: 14px 18px; background: rgba(0,212,255,0.05);
+    border-top: 1px solid var(--border);
+    font-size: 0.93rem; color: var(--text); line-height: 1.7;
+  }
+  .qa-answer.visible { display: block; animation: fadeIn 0.3s ease; }
+  .qa-answer strong { color: var(--accent); }
+
+  /* ── VOCAB CARDS ── */
+  .vocab-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .vocab-card {
+    border-radius: 12px; padding: 20px;
+    border: 2px solid; position: relative; overflow: hidden;
+  }
+  .vocab-card::before {
+    content: ''; position: absolute; top: -20px; right: -20px;
+    width: 80px; height: 80px; border-radius: 50%;
+    opacity: 0.08;
+  }
+  .vocab-card.conductor { border-color: var(--green); background: rgba(0,230,118,0.06); }
+  .vocab-card.conductor::before { background: var(--green); }
+  .vocab-card.insulator { border-color: var(--red); background: rgba(255,23,68,0.06); }
+  .vocab-card.insulator::before { background: var(--red); }
+  .vocab-card.resistor { border-color: var(--yellow); background: rgba(255,215,64,0.06); }
+  .vocab-card.resistor::before { background: var(--yellow); }
+  .vocab-term { font-size: 1.3rem; font-weight: 900; margin-bottom: 6px; }
+  .conductor .vocab-term { color: var(--green); }
+  .insulator .vocab-term { color: var(--red); }
+  .resistor .vocab-term { color: var(--yellow); }
+  .vocab-def { font-size: 0.88rem; color: var(--text); margin-bottom: 10px; line-height: 1.5; }
+  .vocab-bulb {
+    display: flex; align-items: center; gap: 8px; font-size: 0.8rem;
+    font-weight: 700; color: var(--muted);
+  }
+  .bulb-icon { font-size: 1.4rem; }
+  .vocab-examples {
+    font-size: 0.78rem; color: var(--muted); margin-top: 8px; font-style: italic;
+  }
+
+  /* ── DEMO CIRCUIT ── */
+  .demo-circuit {
+    background: var(--panel); border-radius: 12px; border: 1px solid var(--border);
+    padding: 20px; text-align: center; margin: 16px 0;
+  }
+  .circuit-svg { width: 100%; max-width: 480px; }
+  .demo-status { margin-top: 12px; font-weight: 700; color: var(--muted); font-size: 0.9rem; }
+  .demo-buttons { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 16px; }
+  .demo-btn {
+    padding: 8px 18px; border-radius: 8px; border: 2px solid;
+    font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 0.85rem;
+    cursor: pointer; transition: all 0.2s; background: transparent;
+  }
+  .demo-btn.conductor-btn { border-color: var(--green); color: var(--green); }
+  .demo-btn.conductor-btn:hover, .demo-btn.conductor-btn.active { background: var(--green); color: #000; }
+  .demo-btn.insulator-btn { border-color: var(--red); color: var(--red); }
+  .demo-btn.insulator-btn:hover, .demo-btn.insulator-btn.active { background: var(--red); color: #fff; }
+  .demo-btn.resistor-btn { border-color: var(--yellow); color: var(--yellow); }
+  .demo-btn.resistor-btn:hover, .demo-btn.resistor-btn.active { background: var(--yellow); color: #000; }
+
+  /* ── INVESTIGATION TABLE ── */
+  .inv-table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
+  .inv-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  .inv-table th {
+    background: #0a1628; padding: 12px 14px; text-align: left;
+    font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--accent); font-weight: 800; border-bottom: 2px solid var(--accent);
+  }
+  .inv-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .inv-table tr:last-child td { border-bottom: none; }
+  .inv-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+  .inv-table input[type="text"] {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+    color: var(--text); font-family: 'Nunito', sans-serif; font-size: 0.85rem;
+    padding: 6px 10px; width: 100%; outline: none; transition: border-color 0.2s;
+  }
+  .inv-table input[type="text"]:focus { border-color: var(--accent); }
+  .result-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+  .result-btn {
+    padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border);
+    background: transparent; color: var(--muted); cursor: pointer;
+    font-family: 'Nunito', sans-serif; font-size: 0.8rem; font-weight: 700;
+    transition: all 0.15s;
+  }
+  .result-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .result-btn.bright { background: rgba(0,230,118,0.2); border-color: var(--green); color: var(--green); }
+  .result-btn.dim { background: rgba(255,215,64,0.2); border-color: var(--yellow); color: var(--yellow); }
+  .result-btn.off { background: rgba(255,23,68,0.2); border-color: var(--red); color: var(--red); }
+  .class-select {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+    color: var(--text); font-family: 'Nunito', sans-serif; font-size: 0.85rem;
+    padding: 6px 8px; outline: none;
+  }
+  .class-select:focus { border-color: var(--accent); }
+
+  /* ── ANALYSIS TEXT AREAS ── */
+  .analysis-group { display: flex; flex-direction: column; gap: 14px; }
+  .analysis-item label {
+    display: block; font-size: 0.82rem; font-weight: 800; color: var(--accent);
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;
+  }
+  .analysis-item textarea {
+    width: 100%; background: var(--panel); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text); font-family: 'Nunito', sans-serif;
+    font-size: 0.93rem; line-height: 1.6; padding: 12px 14px; resize: vertical;
+    min-height: 80px; outline: none; transition: border-color 0.2s;
+  }
+  .analysis-item textarea:focus { border-color: var(--accent); }
+
+  /* ── SCREENSHOT CTA ── */
+  .screenshot-cta {
+    background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(0,230,118,0.08));
+    border: 2px dashed var(--accent); border-radius: 12px;
+    padding: 18px 20px; margin-top: 20px; display: flex; align-items: center; gap: 14px;
+  }
+  .screenshot-cta .cta-icon { font-size: 2rem; flex-shrink: 0; }
+  .screenshot-cta .cta-text { font-size: 0.9rem; }
+  .screenshot-cta .cta-text strong { color: var(--accent); display: block; margin-bottom: 2px; }
+  .screenshot-cta .cta-text span { color: var(--muted); font-size: 0.83rem; }
+
+  /* ── SUCCESS CRITERIA CHECKLIST ── */
+  .sc-list { display: flex; flex-direction: column; gap: 10px; }
+  .sc-item {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 18px; cursor: pointer;
+    transition: all 0.2s; user-select: none;
+  }
+  .sc-item:hover { border-color: var(--green); }
+  .sc-item.achieved { border-color: var(--green); background: rgba(0,230,118,0.08); }
+  .sc-check {
+    width: 28px; height: 28px; border-radius: 8px;
+    border: 2px solid var(--border); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; transition: all 0.2s; background: transparent;
+  }
+  .sc-item.achieved .sc-check { background: var(--green); border-color: var(--green); color: #000; }
+  .sc-text { flex: 1; font-weight: 700; font-size: 0.93rem; }
+  .sc-item.achieved .sc-text { color: var(--green); }
+  .sc-counter {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 20px; text-align: center; margin-top: 16px;
+  }
+  .sc-counter .count { font-size: 2.5rem; font-weight: 900; color: var(--green); font-family: 'Space Mono', monospace; }
+  .sc-counter .count-label { color: var(--muted); font-size: 0.85rem; font-weight: 600; }
+
+  /* ── SENTENCE STEMS ── */
+  .stems { display: flex; flex-direction: column; gap: 12px; }
+  .stem-item { display: flex; align-items: flex-start; gap: 12px; }
+  .stem-prefix {
+    background: var(--accent); color: #000; font-weight: 800; font-size: 0.85rem;
+    padding: 8px 12px; border-radius: 8px; white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+  }
+  .stem-input {
+    flex: 1; background: var(--panel); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text); font-family: 'Nunito', sans-serif;
+    font-size: 0.93rem; padding: 8px 12px; outline: none; transition: border-color 0.2s;
+  }
+  .stem-input:focus { border-color: var(--accent); }
+
+  /* ── INFO BOX ── */
+  .info-box {
+    border-radius: 10px; padding: 16px 18px; margin: 14px 0;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .info-box.blue { background: rgba(0,212,255,0.08); border-left: 4px solid var(--accent); }
+  .info-box.green { background: rgba(0,230,118,0.08); border-left: 4px solid var(--green); }
+  .info-box.yellow { background: rgba(255,215,64,0.08); border-left: 4px solid var(--yellow); }
+  .info-box.orange { background: rgba(255,109,0,0.08); border-left: 4px solid var(--orange); }
+  .info-box-icon { font-size: 1.3rem; flex-shrink: 0; }
+  .info-box-text { font-size: 0.9rem; line-height: 1.6; }
+  .info-box-text strong { display: block; margin-bottom: 4px; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* ── UTILITY ── */
+  .spacer { height: 16px; }
+  ul.plain-list { padding-left: 20px; }
+  ul.plain-list li { margin-bottom: 6px; font-size: 0.93rem; color: var(--text); }
+  ul.plain-list li::marker { color: var(--accent); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .vocab-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <span class="hero-bolt">⚡</span>
+  <h1>Year 6 Science: <span>Electricity</span></h1>
+  <p>Conductors · Insulators · Resistors &nbsp;|&nbsp; 90-minute lesson</p>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-bar">
+  <span class="progress-label">LESSON PROGRESS</span>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <span class="progress-pct" id="progressPct">0%</span>
+</div>
+
+<div class="container">
+
+  <!-- ═══ PHASE 1: WARM-UP ═══ -->
+  <div class="phase open" data-phase="1">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <span class="phase-icon">🔁</span>
+      <div class="phase-title">
+        <h2>Phase 1: Warm-Up & Recap</h2>
+        <div class="meta">15 minutes &nbsp;·&nbsp; Think–Pair–Share &nbsp;·&nbsp; Mini Whiteboards</div>
+      </div>
+      <span class="phase-badge" style="background:rgba(0,212,255,0.15);color:var(--accent);border:1px solid var(--accent)">15 MIN</span>
+      <span class="phase-chevron">▾</span>
+    </div>
+    <div class="phase-body">
+      <div class="info-box blue">
+        <span class="info-box-icon">💡</span>
+        <div class="info-box-text">
+          <strong>How this works</strong>
+          Click each question below to reveal the answer. Discuss with your partner first — then check!
+        </div>
+      </div>
+
+      <div class="section-label">Think–Pair–Share Questions</div>
+      <div class="qa-group">
+
+        <div class="qa-card">
+          <div class="qa-question" onclick="toggleAnswer(this)">
+            <span class="q-icon">❓</span>
+            <span>What is a circuit?</span>
+            <span class="reveal-hint">click to reveal →</span>
+          </div>
+          <div class="qa-answer">
+            A circuit is a <strong>complete, closed loop</strong> that allows electricity to flow from a power source, through components (like a light bulb), and back again. If the loop is broken anywhere, electricity stops flowing.
+          </div>
+        </div>
+
+        <div class="qa-card">
+          <div class="qa-question" onclick="toggleAnswer(this)">
+            <span class="q-icon">❓</span>
+            <span>What happens if the circuit is broken?</span>
+            <span class="reveal-hint">click to reveal →</span>
+          </div>
+          <div class="qa-answer">
+            The electricity <strong>stops flowing</strong>. Any components in the circuit (like bulbs or motors) turn off. This is the same principle as a light switch — it "breaks" the circuit to turn the light off.
+          </div>
+        </div>
+
+        <div class="qa-card">
+          <div class="qa-question" onclick="toggleAnswer(this)">
+            <span class="q-icon">❓</span>
+            <span>Where does electricity come from?</span>
+            <span class="reveal-hint">click to reveal →</span>
+          </div>
+          <div class="qa-answer">
+            Electricity can be generated from many <strong>energy sources</strong>: batteries (chemical energy), solar panels (light energy), wind turbines (kinetic energy), and power plants (burning coal, gas, or nuclear reactions). In science, we often use batteries.
+          </div>
+        </div>
+
+        <div class="qa-card">
+          <div class="qa-question" onclick="toggleAnswer(this)">
+            <span class="q-icon">❓</span>
+            <span>What types of energy does electricity transform into?</span>
+            <span class="reveal-hint">click to reveal →</span>
+          </div>
+          <div class="qa-answer">
+            Electricity can be transformed into: <strong>Light energy</strong> (light bulb), <strong>Heat energy</strong> (toaster), <strong>Sound energy</strong> (speaker), <strong>Kinetic (movement) energy</strong> (electric motor). This is called energy transformation.
+          </div>
+        </div>
+
+      </div>
+
+      <div class="section-label">Mini Whiteboard Task</div>
+      <div class="info-box yellow">
+        <span class="info-box-icon">✏️</span>
+        <div class="info-box-text">
+          <strong>Draw on your whiteboard</strong>
+          Draw a simple circuit showing: battery → wires → light bulb. Add arrows to show the direction energy travels around the circuit.
+        </div>
+      </div>
+
+      <div class="section-label">🌱 Sustainability Connection</div>
+      <div class="qa-card">
+        <div class="qa-question" onclick="toggleAnswer(this)">
+          <span class="q-icon">🌿</span>
+          <span>Why might we want to use renewable energy sources in circuits?</span>
+          <span class="reveal-hint">click to reveal →</span>
+        </div>
+        <div class="qa-answer">
+          Renewable sources like <strong>solar and wind</strong> generate electricity without releasing greenhouse gases or using up finite resources like coal or oil. Using renewable energy in circuits (e.g., solar-powered devices) reduces environmental impact and connects to sustainable living — like the ideas in our school sustainability program!
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PHASE 2: EXPLICIT TEACHING ═══ -->
+  <div class="phase" data-phase="2">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <span class="phase-icon">📘</span>
+      <div class="phase-title">
+        <h2>Phase 2: Explicit Teaching</h2>
+        <div class="meta">10 minutes &nbsp;·&nbsp; Key vocabulary &nbsp;·&nbsp; Demonstration</div>
+      </div>
+      <span class="phase-badge" style="background:rgba(213,0,249,0.15);color:var(--purple);border:1px solid var(--purple)">10 MIN</span>
+      <span class="phase-chevron">▾</span>
+    </div>
+    <div class="phase-body">
+
+      <div class="section-label">Key Vocabulary</div>
+      <div class="vocab-grid">
+        <div class="vocab-card conductor">
+          <div class="vocab-term">Conductor</div>
+          <div class="vocab-def">Allows electricity to flow through it easily. Usually metals.</div>
+          <div class="vocab-bulb"><span class="bulb-icon">💡</span> Bulb result: <strong style="color:var(--green)">&nbsp;BRIGHT</strong></div>
+          <div class="vocab-examples">Examples: copper wire, aluminium foil, coins, metal spoon, paperclip</div>
+        </div>
+        <div class="vocab-card insulator">
+          <div class="vocab-term">Insulator</div>
+          <div class="vocab-def">Blocks electricity from flowing through it. Protects us from electric shocks.</div>
+          <div class="vocab-bulb"><span class="bulb-icon">💡</span> Bulb result: <strong style="color:var(--red)">&nbsp;OFF (no light)</strong></div>
+          <div class="vocab-examples">Examples: rubber band, plastic ruler, fabric, wood, glass</div>
+        </div>
+        <div class="vocab-card resistor">
+          <div class="vocab-term">Resistor</div>
+          <div class="vocab-def">Slows down the flow of electricity. Reduces the current in a circuit.</div>
+          <div class="vocab-bulb"><span class="bulb-icon">💡</span> Bulb result: <strong style="color:var(--yellow)">&nbsp;DIM</strong></div>
+          <div class="vocab-examples">Examples: pencil (graphite), some types of carbon materials</div>
+        </div>
+      </div>
+
+      <div class="section-label">Interactive Demo — What happens to the bulb?</div>
+      <div class="demo-circuit">
+        <svg class="circuit-svg" viewBox="0 0 480 180" xmlns="http://www.w3.org/2000/svg">
+          <!-- Wire top -->
+          <line x1="80" y1="60" x2="220" y2="60" stroke="#00d4ff" stroke-width="4" stroke-linecap="round"/>
+          <line x1="300" y1="60" x2="400" y2="60" stroke="#00d4ff" stroke-width="4" stroke-linecap="round"/>
+          <!-- Wire bottom -->
+          <line x1="80" y1="120" x2="400" y2="120" stroke="#00d4ff" stroke-width="4" stroke-linecap="round"/>
+          <!-- Left vertical -->
+          <line x1="80" y1="60" x2="80" y2="120" stroke="#00d4ff" stroke-width="4" stroke-linecap="round"/>
+          <!-- Right vertical -->
+          <line x1="400" y1="60" x2="400" y2="120" stroke="#00d4ff" stroke-width="4" stroke-linecap="round"/>
+          <!-- Battery -->
+          <rect x="40" y="75" width="40" height="30" rx="6" fill="#1a2535" stroke="#00d4ff" stroke-width="2"/>
+          <text x="60" y="95" text-anchor="middle" fill="#00d4ff" font-family="Space Mono" font-size="10" font-weight="bold">+</text>
+          <text x="52" y="94" text-anchor="middle" fill="#7a9bb5" font-family="Space Mono" font-size="8">-</text>
+          <text x="60" y="108" text-anchor="middle" fill="#7a9bb5" font-family="Nunito" font-size="9">Battery</text>
+          <!-- Gap area -->
+          <rect x="218" y="44" width="84" height="32" rx="8" fill="#0f1923" stroke="#2a3f58" stroke-width="2" stroke-dasharray="4,3"/>
+          <text id="gapLabel" x="260" y="65" text-anchor="middle" fill="#7a9bb5" font-family="Nunito" font-size="11" font-weight="700">Material</text>
+          <!-- Bulb -->
+          <circle id="bulbGlow" cx="350" cy="90" r="28" fill="rgba(255,215,64,0)" filter="url(#glow)"/>
+          <circle id="bulbFill" cx="350" cy="90" r="18" fill="#1a2535" stroke="#ffd740" stroke-width="2.5"/>
+          <text id="bulbEmoji" x="350" y="96" text-anchor="middle" font-size="16">💡</text>
+          <text x="350" y="118" text-anchor="middle" fill="#7a9bb5" font-family="Nunito" font-size="9">Bulb</text>
+          <!-- Arrows -->
+          <defs>
+            <filter id="glow"><feGaussianBlur stdDeviation="6" result="blur"/><feComposite in="SourceGraphic" in2="blur" operator="over"/></filter>
+            <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#00d4ff" opacity="0.5"/>
+            </marker>
+          </defs>
+          <line x1="120" y1="60" x2="180" y2="60" stroke="#00d4ff" stroke-width="2" stroke-opacity="0.5" marker-end="url(#arrow)"/>
+        </svg>
+        <div class="demo-status" id="demoStatus">👇 Click a material type below to see what happens</div>
+        <div class="demo-buttons">
+          <button class="demo-btn conductor-btn" onclick="setDemo('conductor', this)">⚡ Conductor (e.g. coin)</button>
+          <button class="demo-btn insulator-btn" onclick="setDemo('insulator', this)">🚫 Insulator (e.g. rubber)</button>
+          <button class="demo-btn resistor-btn" onclick="setDemo('resistor', this)">🔅 Resistor (e.g. pencil)</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ PHASE 3: INVESTIGATION SETUP ═══ -->
+  <div class="phase" data-phase="3">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <span class="phase-icon">🔬</span>
+      <div class="phase-title">
+        <h2>Phase 3: Investigation Setup</h2>
+        <div class="meta">10 minutes &nbsp;·&nbsp; Inquiry question &nbsp;·&nbsp; Materials &amp; predictions</div>
+      </div>
+      <span class="phase-badge" style="background:rgba(255,215,64,0.15);color:var(--yellow);border:1px solid var(--yellow)">10 MIN</span>
+      <span class="phase-chevron">▾</span>
+    </div>
+    <div class="phase-body">
+
+      <div class="info-box yellow">
+        <span class="info-box-icon">🔬</span>
+        <div class="info-box-text">
+          <strong>Our Inquiry Question</strong>
+          Which materials allow electricity to flow, and which stop or slow it?
+        </div>
+      </div>
+
+      <div class="section-label">Materials per group</div>
+      <ul class="plain-list">
+        <li>Battery pack</li>
+        <li>Leads with alligator clips</li>
+        <li>Light bulb in holder</li>
+        <li>Test items: metal spoon, paperclip, rubber band, plastic ruler, pencil (graphite), coin, fabric, aluminium foil</li>
+      </ul>
+
+      <div class="section-label">Before you start — record your predictions in Phase 4 below</div>
+      <div class="info-box blue">
+        <span class="info-box-icon">💡</span>
+        <div class="info-box-text">
+          <strong>How to set up your circuit</strong>
+          1. Connect battery → lead → bulb holder → lead, leaving a gap in the circuit.<br>
+          2. Place each material across the gap using the alligator clips.<br>
+          3. Watch what happens to the bulb — then record your result.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ PHASE 4: INVESTIGATION ═══ -->
+  <div class="phase" data-phase="4">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <span class="phase-icon">🧪</span>
+      <div class="phase-title">
+        <h2>Phase 4: Hands-On Investigation</h2>
+        <div class="meta">30 minutes &nbsp;·&nbsp; Test materials &nbsp;·&nbsp; Record results</div>
+      </div>
+      <span class="phase-badge" style="background:rgba(255,109,0,0.15);color:var(--orange);border:1px solid var(--orange)">30 MIN</span>
+      <span class="phase-chevron">▾</span>
+    </div>
+    <div class="phase-body">
+
+      <div class="info-box orange">
+        <span class="info-box-icon">✏️</span>
+        <div class="info-box-text">
+          <strong>Fill in the table as you test each material</strong>
+          Type your prediction first, then click the result button after you test it. Choose the classification from the dropdown.
+        </div>
+      </div>
+
+      <div class="section-label">Recording Table — fill in as you go</div>
+      <div class="inv-table-wrap">
+        <table class="inv-table" id="invTable">
+          <thead>
+            <tr>
+              <th>Material</th>
+              <th>Prediction</th>
+              <th>Result</th>
+              <th>Classification</th>
+            </tr>
+          </thead>
+          <tbody id="invBody">
+          </tbody>
+        </table>
+      </div>
+
+      <div class="screenshot-cta">
+        <span class="cta-icon">📸</span>
+        <div class="cta-text">
+          <strong>Screenshot your completed table!</strong>
+          <span>Once your table is filled in, take a screenshot and paste it into your OneNote science page. Use <strong>Windows + Shift + S</strong> to snip the screen.</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ PHASE 5: ANALYSIS ═══ -->
+  <div class="phase" data-phase="5">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <span class="phase-icon">🧠</span>
+      <div class="phase-title">
+        <h2>Phase 5: Analysis & Discussion</h2>
+        <div class="meta">10 minutes &nbsp;·&nbsp; Type your answers &nbsp;·&nbsp; Class discussion</div>
+      </div>
+      <span class="phase-badge" style="background:rgba(0,230,118,0.15);color:var(--green);border:1px solid var(--green)">10 MIN</span>
+      <span class="phase-chevron">▾</span>
+    </div>
+    <div class="phase-body">
+
+      <div class="info-box green">
+        <span class="info-box-icon">💡</span>
+        <div class="info-box-text">
+          <strong>Key Teaching Point</strong>
+          Bright light = good conductor &nbsp;|&nbsp; No light = insulator &nbsp;|&nbsp; Dim light = resistor
+        </div>
+      </div>
+
+      <div class="section-label">Type your answers below</div>
+      <div class="analysis-group">
+        <div class="analysis-item">
+          <label>What patterns did you notice across the materials?</label>
+          <textarea id="a1" placeholder="Type your answer here..."></textarea>
+        </div>
+        <div class="analysis-item">
+          <label>Which materials were conductors? What do they have in common?</label>
+          <textarea id="a2" placeholder="Type your answer here..."></textarea>
+        </div>
+        <div class="analysis-item">
+          <label>Which materials were insulators?</label>
+          <textarea id="a3" placeholder="Type your answer here..."></textarea>
+        </div>
+        <div class="analysis-item">
+          <label>Did any materials slightly work — could they be resistors? What evidence do you have?</label>
+          <textarea id="a4" placeholder="Type your answer here..."></textarea>
+        </div>
+        <div class="analysis-item">
+          <label>Why do you think metals are good conductors? (Think about what you know about atoms!)</label>
+          <textarea id="a5" placeholder="Type your answer here..."></textarea>
+        </div>
+      </div>
+
+      <div class="screenshot-cta">
+        <span class="cta-icon">📸</span>
+        <div class="cta-text">
+          <strong>Screenshot your answers!</strong>
+          <span>Once you've typed your analysis answers, take a screenshot and paste them into your OneNote science page. Use <strong>Windows + Shift + S</strong> to snip the screen.</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ PHASE 6: REFLECTION ═══ -->
+  <div class="phase" data-phase="6">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <span class="phase-icon">🔄</span>
+      <div class="phase-title">
+        <h2>Phase 6: Reflection & Success Criteria</h2>
+        <div class="meta">10 minutes &nbsp;·&nbsp; Self-assessment &nbsp;·&nbsp; Sentence stems</div>
+      </div>
+      <span class="phase-badge" style="background:rgba(0,212,255,0.15);color:var(--accent);border:1px solid var(--accent)">10 MIN</span>
+      <span class="phase-chevron">▾</span>
+    </div>
+    <div class="phase-body">
+
+      <div class="section-label">✅ Click on each success criterion you have achieved today</div>
+      <div class="sc-list">
+        <div class="sc-item" onclick="toggleSC(this)">
+          <div class="sc-check"></div>
+          <div class="sc-text">I can build a simple working circuit.</div>
+        </div>
+        <div class="sc-item" onclick="toggleSC(this)">
+          <div class="sc-check"></div>
+          <div class="sc-text">I can explain how energy is transferred in a circuit.</div>
+        </div>
+        <div class="sc-item" onclick="toggleSC(this)">
+          <div class="sc-check"></div>
+          <div class="sc-text">I can test materials safely and record results accurately.</div>
+        </div>
+        <div class="sc-item" onclick="toggleSC(this)">
+          <div class="sc-check"></div>
+          <div class="sc-text">I can classify materials as conductor, insulator or resistor with evidence.</div>
+        </div>
+        <div class="sc-item" onclick="toggleSC(this)">
+          <div class="sc-check"></div>
+          <div class="sc-text">I can explain WHY a material behaves as a conductor, insulator or resistor.</div>
+        </div>
+      </div>
+
+      <div class="sc-counter">
+        <div class="count" id="scCount">0</div>
+        <div class="count-label">of 5 success criteria achieved</div>
+      </div>
+
+      <div class="section-label">Sentence Stems — complete at least two</div>
+      <div class="stems">
+        <div class="stem-item">
+          <div class="stem-prefix">I learned that…</div>
+          <input class="stem-input" type="text" placeholder="type your response...">
+        </div>
+        <div class="stem-item">
+          <div class="stem-prefix">A conductor is…</div>
+          <input class="stem-input" type="text" placeholder="type your response...">
+        </div>
+        <div class="stem-item">
+          <div class="stem-prefix">One thing that surprised me was…</div>
+          <input class="stem-input" type="text" placeholder="type your response...">
+        </div>
+        <div class="stem-item">
+          <div class="stem-prefix">Next time I would…</div>
+          <input class="stem-input" type="text" placeholder="type your response...">
+        </div>
+      </div>
+
+      <div class="screenshot-cta" style="margin-top:20px">
+        <span class="cta-icon">📸</span>
+        <div class="cta-text">
+          <strong>Screenshot your reflection!</strong>
+          <span>Take a screenshot of your success criteria and sentence stems. Paste into your OneNote science page. Use <strong>Windows + Shift + S</strong> to snip.</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ PHASE 7: PACK UP ═══ -->
+  <div class="phase" data-phase="7">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <span class="phase-icon">🧹</span>
+      <div class="phase-title">
+        <h2>Phase 7: Pack-Up</h2>
+        <div class="meta">5 minutes &nbsp;·&nbsp; Safe &amp; tidy</div>
+      </div>
+      <span class="phase-badge" style="background:rgba(122,155,181,0.15);color:var(--muted);border:1px solid var(--muted)">5 MIN</span>
+      <span class="phase-chevron">▾</span>
+    </div>
+    <div class="phase-body">
+      <ul class="plain-list" style="margin-top:16px">
+        <li>Safely disconnect all circuits — remove alligator clips first.</li>
+        <li>Return all test materials to the tray.</li>
+        <li>Coil leads neatly and return to the box.</li>
+        <li>Return battery packs and bulb holders to the equipment trolley.</li>
+        <li>Quick class reset — push in chairs, desks back to home position.</li>
+      </ul>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+// ── PHASE TOGGLE ──
+function togglePhase(header) {
+  const phase = header.closest('.phase');
+  phase.classList.toggle('open');
+  updateProgress();
+}
+
+// ── ANSWER REVEAL ──
+function toggleAnswer(questionEl) {
+  const answer = questionEl.nextElementSibling;
+  answer.classList.toggle('visible');
+  const hint = questionEl.querySelector('.reveal-hint');
+  if (answer.classList.contains('visible')) {
+    hint.textContent = 'click to hide ↑';
+  } else {
+    hint.textContent = 'click to reveal →';
+  }
+}
+
+// ── DEMO CIRCUIT ──
+function setDemo(type, btn) {
+  document.querySelectorAll('.demo-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const gapLabel = document.getElementById('gapLabel');
+  const bulbFill = document.getElementById('bulbFill');
+  const bulbGlow = document.getElementById('bulbGlow');
+  const status = document.getElementById('demoStatus');
+
+  const configs = {
+    conductor: {
+      label: '🪙 Coin', gapColor: '#00e676',
+      bulbColor: '#ffd740', glowColor: 'rgba(255,215,64,0.5)',
+      status: '✅ Conductor! The coin allows electricity to flow freely → the bulb glows BRIGHT.'
+    },
+    insulator: {
+      label: '🧴 Rubber', gapColor: '#ff1744',
+      bulbColor: '#1a2535', glowColor: 'rgba(0,0,0,0)',
+      status: '🚫 Insulator! Rubber blocks electricity completely → the bulb stays OFF.'
+    },
+    resistor: {
+      label: '✏️ Pencil', gapColor: '#ffd740',
+      bulbColor: '#a0841a', glowColor: 'rgba(255,215,64,0.2)',
+      status: '🔅 Resistor! The graphite in a pencil slows the flow → the bulb glows DIM.'
+    }
+  };
+
+  const c = configs[type];
+  gapLabel.textContent = c.label;
+  gapLabel.style.fill = c.gapColor;
+  bulbFill.style.fill = c.bulbColor;
+  bulbGlow.style.fill = c.glowColor;
+  status.textContent = c.status;
+}
+
+// ── INVESTIGATION TABLE ──
+const materials = [
+  'Metal spoon', 'Paperclip', 'Rubber band', 'Plastic ruler',
+  'Pencil (graphite)', 'Coin', 'Fabric', 'Aluminium foil'
+];
+
+const tbody = document.getElementById('invBody');
+materials.forEach((mat, i) => {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td style="font-weight:700;color:var(--text)">${mat}</td>
+    <td><input type="text" placeholder="Your prediction…" aria-label="Prediction for ${mat}"></td>
+    <td>
+      <div class="result-btns">
+        <button class="result-btn" onclick="setResult(this,'bright')">💡 Bright</button>
+        <button class="result-btn" onclick="setResult(this,'dim')">🔅 Dim</button>
+        <button class="result-btn" onclick="setResult(this,'off')">⬛ Off</button>
+      </div>
+    </td>
+    <td>
+      <select class="class-select" aria-label="Classification for ${mat}">
+        <option value="">-- select --</option>
+        <option value="conductor">Conductor</option>
+        <option value="insulator">Insulator</option>
+        <option value="resistor">Resistor</option>
+        <option value="unsure">Not sure</option>
+      </select>
+    </td>
+  `;
+  tbody.appendChild(tr);
+});
+
+function setResult(btn, type) {
+  const group = btn.closest('.result-btns');
+  group.querySelectorAll('.result-btn').forEach(b => b.classList.remove('bright','dim','off'));
+  btn.classList.add(type);
+}
+
+// ── SUCCESS CRITERIA ──
+function toggleSC(item) {
+  item.classList.toggle('achieved');
+  const check = item.querySelector('.sc-check');
+  check.textContent = item.classList.contains('achieved') ? '✓' : '';
+  const count = document.querySelectorAll('.sc-item.achieved').length;
+  document.getElementById('scCount').textContent = count;
+}
+
+// ── PROGRESS ──
+function updateProgress() {
+  const total = document.querySelectorAll('.phase').length;
+  const open = document.querySelectorAll('.phase.open').length;
+  const pct = Math.round((open / total) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressPct').textContent = pct + '%';
+}
+
+// init
+updateProgress();
+</script>
+</body>
+</html>
